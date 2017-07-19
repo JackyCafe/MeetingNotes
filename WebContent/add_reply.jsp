@@ -29,7 +29,7 @@
 		<p>
 		</div>
 		<div id = 'editor'>
-		<form  action='notes' method='post' enctype='multipart/form-data'>
+		<form  action='process' method='post' >
 			<c:if test="${param.processId==''}">
 				<c:set var="processId" scope="session" value="0"/>
 			</c:if>
@@ -45,6 +45,14 @@
 			 
 			參考:<input type='text' id='reference' name='reference' value="${param.reference}" readonly/>
 			上傳:<input type='file' id='upload' name='upload' value="${param.upload}" readonly/><p>
+			本次會議裁示:
+			<select id ='presestation' name ='presestation' >
+				<option>轉為A級</option>
+				<option>轉為B級</option>
+				<option>轉為C級</option>
+				<option>持續列管</option>
+				 
+			</select> 
 			
 			
 			<input hidden name='sponsor' value="${user.chineseName}">

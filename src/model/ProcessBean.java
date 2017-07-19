@@ -121,4 +121,11 @@ public class ProcessBean implements java.io.Serializable {
 		this.upload = upload;
 	}
 
+	@Override
+	public String toString() {
+		return "ProcessBean [id=" + id + ", process_id=" + process_id + ", replyDate=" + replyDate + ", sponsor="
+				+ sponsor + ", status=" + status + ", presestation=" + presestation + ", reference=" + reference
+				+ ", upload=" + upload + "]";
+	}
+
 }

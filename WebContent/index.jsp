@@ -1,12 +1,19 @@
+<%@page import="service.ProcessService"%>
 <%@page import="model.misc.HibernateUtil"%>
 <%@page import="model.dao.NotesBeanHibernateDAO"%>
+<%@page import="model.dao.ProcessBeanHibernateDAO"%>
+<%@page import="service.ProcessService"%>
 <%@page import="service.NotesService"%>
 <%@page import="model.NotesBean"%>
+<%@page import="model.ProcessBean"%>
+
 <%@page import="java.util.List"%>
 
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -44,15 +51,25 @@
 <title>會議記錄</title>
 </head>
 <body>
+	<%
+		NotesService service = new NotesService(new NotesBeanHibernateDAO(HibernateUtil.getSessionFactory()));
+		List<NotesBean> select = service.select();
+		request.setAttribute("select", select);
+
+		ProcessService processService = new ProcessService(
+				new ProcessBeanHibernateDAO(HibernateUtil.getSessionFactory()));
+		List<ProcessBean> process = processService.select();
+		request.setAttribute("process", process);
+	%>
 	<div id='login'>
 		<c:choose>
 			<c:when test="${user.chineseName!=null}">
 				<a href='logout.jsp'>登出</a>
-				<p>
-					<c:out value="歡迎" />
-					<c:out value="${user.chineseName}" />
-				<p>
-					<a href='add_event.jsp?add_action=add'>新增案由</a>
+
+				<c:out value="歡迎" />
+				<c:out value="${user.chineseName}" />
+
+				<a href='add_event.jsp?add_action=add'>新增案由</a>
 			</c:when>
 			<c:otherwise>
 				<a href='login.jsp'>登入</a>
@@ -67,15 +84,17 @@
 	<div id='summary-table'>
 		摘要
 		<table>
-			<th rowspan='2'>級別</th>
-			<th rowspan='2'>處理原則</th>
-			<th rowspan='2'>數量</th>
-			<th colspan='4'>本次會議建議處理件數說明</th>
 			<tr>
-				<th class='table1'>維持</th>
-				<th class='table1'>轉為B級</th>
-				<th class='table1'>轉為B級</th>
-				<th class='table1'>解除列管</th>
+				<th rowspan='2' style="width: 8%; border: 1px solid black;">級別</th>
+				<th rowspan='2' style="width: 8%; border: 1px solid black;">處理原則</th>
+				<th rowspan='2' style="width: 8%; border: 1px solid black;">數量</th>
+				<th colspan='4' style="width: 8%; border: 1px solid black;">本次會議建議處理件數說明</th>
+			</tr>
+			<tr>
+				<th class='table1' style="width: 8%; border: 1px solid black;">維持</th>
+				<th class='table1' style="width: 8%; border: 1px solid black;">轉為B級</th>
+				<th class='table1' style="width: 8%; border: 1px solid black;">轉為B級</th>
+				<th class='table1' style="width: 8%; border: 1px solid black;">解除列管</th>
 			</tr>
 			<tr>
 				<td>A級</td>
@@ -118,16 +137,15 @@
 	<div id='summary-table'>
 		明細
 		<table>
- 			<th>列管事項來源</th>
-			<th>分級列管(註1)</th>
-			<th>討論事項</th>
-			<th>決議/裁示事項</th>
-			<th>功能</th>
-			<%
-				NotesService service = new NotesService(new NotesBeanHibernateDAO(HibernateUtil.getSessionFactory()));
-				List<NotesBean> select = service.select();
-				request.setAttribute("select", select);
-			%>
+			<tr>
+				<th style="width: 8%; border: 1px solid black;">列管事項來源</th>
+				<th style="width: 7%; border: 1px solid black;">分級列管(註1)</th>
+				<th style="width: 30%; border: 1px solid black;">討論事項</th>
+				<th style="width: 30%; border: 1px solid black;">決議/裁示事項</th>
+				<th style="width: 15%; border: 1px solid black;">辦理情形</th>
+				<th style="width: 5%; border: 1px solid black;">本次會議裁示</th>
+				<th style="width: 5%; border: 1px solid black;">功能</th>
+			</tr>
 			<c:if test="${not empty select}">
 				<c:forEach var="row" items="${select}">
 					<c:url value="/add_reply.jsp" var="replypath">
@@ -138,8 +156,9 @@
 						<c:param name="presentation" value="${row.presentation}" />
 						<c:param name="reference" value="${row.reference}" />
 						<c:param name="upload" value="${row.upload}" />
-						<c:param name="add_action" value="add"/>
-						
+
+						<c:param name="add_action" value="add" />
+
 					</c:url>
 					<c:url value="/add_event.jsp" var="editpath">
 						<c:param name="processId" value="${row.processId}" />
@@ -147,28 +166,63 @@
 						<c:param name="grade" value="${row.grade}" />
 						<c:param name="discuss_matter" value="${row.discussMatter}" />
 						<c:param name="presentation" value="${row.presentation}" />
- 						<c:param name="edit_action" value="edit"/>
+
+						<c:param name="edit_action" value="edit" />
 					</c:url>
 					<tr>
- 						<td>${row.source}</td>
+						<td>${row.source}</td>
 						<td>${row.grade}</td>
 						<td>${row.discussMatter}</td>
 						<td>${row.presentation}</td>
-						<td>
-						<c:if test="${ not empty row.upload}">
-						<a href='upload/<c:out value="${row.upload}"/>'
-						 download="${row.upload}" class='button' target='_blank'  >下載</a> 
-						 <p>
-						</c:if>
-						<c:if test ="${user.chineseName !=null }">
-						<a href="${replypath}" class='button'>回覆</a> <p>
-						</c:if>
-						<c:if test="${row.sponsor == user.chineseName }">
-								<a href="${editpath}"  class='button'>編輯</a>
 
-							</c:if>
+						<!-- 辦理情形 -->
+						<td>
+							<table style="border: 0px">
+								<c:forEach var="data" items="${process}">
+									<tr style="border: 0px">
+										<td style="border: 0px"><c:if
+												test="${row.processId==data.process_id}">
+												 ${data.id} 
+												 ${data.status} 
+												  
+											</c:if></td>
+									</tr>
+								</c:forEach>
+							</table>
 						</td>
+
+
+						<!-- 本次會議裁示 -->
+						<td>
+							<table style="border: 0px">
+
+								<c:forEach var="data" items="${process}">
+									<tr style="border: 0px">
+										<td style="border: 0px"><c:if
+												test="${row.processId==data.process_id}">
+												<c:out value="${data.id}" escapeXml="true"/>
+
+												<c:out value="${data.presestation}" escapeXml="true" />
+											</c:if>
+								</c:forEach>
+								</td>
+								</tr>
+							</table>
+					</td>
+					<!-- 功能 -->
+					<td><c:if test="${ not empty row.upload}">
+							<a href='upload/<c:out value="${row.upload}"/>'
+								download="${row.upload}" class='button' target='_blank'>下載</a>
+							<p>
+						</c:if> <c:if test="${user.chineseName !=null }">
+							<a href="${replypath}" class='button'>回覆</a>
+							<p>
+						</c:if> <c:if test="${row.sponsor == user.chineseName }">
+							<a href="${editpath}" class='button'>編輯</a>
+
+						</c:if></td>
 					</tr>
+
 				</c:forEach>
 			</c:if>
 		</table>
