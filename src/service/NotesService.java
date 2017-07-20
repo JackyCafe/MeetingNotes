@@ -37,5 +37,10 @@ public class NotesService implements IService<NotesBean> {
 	public NotesBean update(NotesBean bean) {
 		return dao.update(bean);
 	}
+	
+	public NotesBean update(int id, Boolean control,Integer controlStatus)
+	{
+		return dao.update(id,control,controlStatus);
+	}
 
 }

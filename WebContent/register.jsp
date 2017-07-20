@@ -25,15 +25,19 @@
 
 
 	<form action="register" method='post'>
-		請輸入帳號<input type='text' id='user' name='user' />
+		請輸入帳號<input type='text' id='user' name='user' required="required" />
 		<p>
-			請輸入密碼<input type="password" id='passwd' name='passwd' />
+			請輸入密碼<input type="password" id='passwd' name='passwd' required="required"
+			 pattern="[A-Za-z0-9]{6,16}"
+			  maxlength='16' title='由英文或數字所組成的6~16字元' />
 		<p>
-			確認密碼<input type="password" id='passwd2' name='passwd2' />
+		<!-- 	確認密碼<input type="password" id='passwd2' name='passwd2' required="required" 
+			 pattern="[A-Za-z0-9]{6,16}"
+			 maxlength='16' title='由英文或數字所組成的6~16字元' /> -->
 		<p>
 			請輸入email<input type='text' id='email' name='email' />
 		<p>
-			請輸入中文名<input type='text' id='chname' name='chname' />
+			請輸入中文名<input type='text' id='chname' name='chname' required="required" />
 		<p>
 			<input type="hidden" name="_charset_" value="UTF-8" /> <input
 				type='submit' name='add_action' value='送出' />

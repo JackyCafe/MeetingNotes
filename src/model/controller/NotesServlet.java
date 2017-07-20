@@ -118,6 +118,9 @@ public class NotesServlet extends HttpServlet {
 		notes.setPresentation(presentation);
 		notes.setReference(reference);
 		notes.setUpload(filename);
+		notes.setControl(false);
+		notes.setControlStatus(999);
+		
  
 		if (name[maps.size() - 1].equals("add_notes")) {
 			// System.out.println(notes);

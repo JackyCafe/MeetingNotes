@@ -95,6 +95,30 @@ public class NotesBeanHibernateDAO implements IDAO<NotesBean> {
 			tmp.setPresentation(bean.getPresentation());
 			tmp.setReference(bean.getReference());
 			tmp.setUpload(bean.getUpload());
+			tmp.setControl(bean.getControl());
+			tmp.setControlStatus(bean.getControlStatus());
+
+		 
+		}
+		return tmp;
+	}
+	
+	public NotesBean update(int id,Boolean control,int controlStatus)
+	{
+		NotesBean tmp = select(id);
+		System.out.println("update tmp"+tmp+""+id);
+		if (tmp != null) {
+			tmp.setProcessId(tmp.getProcessId());
+			tmp.setRecordDate(new Date());
+			tmp.setSponsor(tmp.getSponsor());
+			tmp.setGrade(tmp.getGrade());
+			tmp.setDiscussMatter(tmp.getDiscussMatter());
+			tmp.setSource(tmp.getSource());
+			tmp.setPresentation(tmp.getPresentation());
+			tmp.setReference(tmp.getReference());
+			tmp.setUpload(tmp.getUpload());
+			tmp.setControl(control);
+			tmp.setControlStatus(controlStatus);
 		 
 		}
 		return tmp;

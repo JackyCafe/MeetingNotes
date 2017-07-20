@@ -68,11 +68,7 @@
         FROM Notes
         GROUP BY substr(grade,1,1)  
     </sql:query>	
-   <sql:query var="summary2" dataSource="jdbc/xxx">
-        Select ControlStatus  ,Count(ControlStatus) as val
-		from Notes
-		group By ControlStatus
-    </sql:query>
+   
       
     
     <div id='login'>
@@ -96,102 +92,7 @@
 		<p>
 	</div>
 
-
-	<div id='summary-table'>
-		摘要
-		<table>
-			<tr>
-				<th rowspan='2' style="width: 8%; border: 1px solid black;">級別</th>
-				<th rowspan='2' style="width: 8%; border: 1px solid black;">處理原則</th>
-				<th rowspan='2' style="width: 8%; border: 1px solid black;">數量</th>
-				<th colspan='4' style="width: 8%; border: 1px solid black;">本次會議建議處理件數說明</th>
-			</tr>
-			<tr>
-				<th class='table1' style="width: 8%; border: 1px solid black;">維持</th>
-				<th class='table1' style="width: 8%; border: 1px solid black;">轉為B級</th>
-				<th class='table1' style="width: 8%; border: 1px solid black;">轉為C級</th>
-				<th class='table1' style="width: 8%; border: 1px solid black;">解除列管</th>
-			</tr>
-			<tr>
-				<td>A級</td>
-				<td>於會議中提出報告</td>
-				<td> 
-				<c:forEach var="row" items="${summary1.rows}">
-					<c:if test='${ row.grade=="A"}'>
-						<c:out value="${row.val}"/>
-					 </c:if>
-				</c:forEach>	
-				</td>
-				<td> <!-- 維持 -->
-				<c:forEach var="row" items="${summary2.rows}">
-					<c:if test = '${row.ControlStatus=="1"||row.ControlStatus=="999"}'>
-					 ${row.val}
-					</c:if>
-  				</c:forEach>
-				
-				</td> 
-				<td><!-- 轉為B級 -->
-				<c:forEach var="row" items="${summary2.rows}">
-					<c:if test = '${ row.ControlStatus=="2" }'>
-					 ${row.val}
-					</c:if>
-  					</c:forEach>
-				</td>
-				<td><!-- 轉為C級 -->
-				<c:forEach var="row" items="${summary2.rows}">
-					<c:if test = '${ row.ControlStatus=="3" }'>
-					 ${row.val}
-					</c:if>
-  					</c:forEach>
-				</td>
-				<td><!-- 解除列管 -->
-				<c:forEach var="row" items="${summary2.rows}">
-					<c:if test = '${ row.ControlStatus=="0" }'>
-					 ${row.val}
-					</c:if>
-  					</c:forEach>
-				</td>
- 			</tr>
-			<tr>
-				<td>B級</td>
-				<td>承辦人檢視追蹤</td>
-				<td> 
-			   <c:forEach var="row" items="${summary1.rows}"> 
-					<c:if test='${ row.grade=="B"}'>
-						<c:out value="${row.val}"/>
-					 </c:if>
-				</c:forEach>	</td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-			</tr>
-			<tr>
-				<td>C級</td>
-				<td>列入議程，由團隊追蹤，並依情節回報承辦人</td>
-				<td> 
-				<c:forEach var="row" items="${summary1.rows}"> 
-					<c:if test='${ row.grade=="C"}'>
-						<c:out value="${row.val}"/>
-					 </c:if>
-				</c:forEach>	
-				</td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-			</tr>
-			<tr>
-				<td>解列</td>
-				<td>提出說明恭請裁示</td>
-				<td>B03,B04,B05,A05,A06,A07</td>
-				<td></td>
-				<td></td>
-				<td></td>
-				<td></td>
-			</tr>
-		</table>
-	</div>
+ 
 	<div id='summary-table'>
 		明細
 		<table>
@@ -206,7 +107,7 @@
 			</tr>
 			<c:if test="${not empty select}">
 				<c:forEach var="row" items="${select}">
-				<c:if test = "${row.control == false}">
+				<c:if test = "${row.control == true}">
 					<c:url value="/add_reply.jsp" var="replypath">
 						<c:param name="processId" value="${row.processId}" />
 						<c:param name="source" value="${row.source}" />
@@ -237,12 +138,12 @@
 						<!-- 辦理情形 -->
 						<td>
 							<table style="border: 0px">
-								<c:forEach var="data" items="${process}" varStatus="status">
+								<c:forEach var="data" items="${process}">
 									<tr style="border: 0px">
 										<td style="border: 0px"><c:if
 												test="${row.processId==data.process_id}">
-												 <c:out value="${status.count}"/> <p>
-												 <c:out value="${data.status}" escapeXml="false"/>
+												 ${data.id} 
+												 ${data.status}
 												 <p> 
 												 (${data.sponsor},${data.replyDate})
 											</c:if></td>

@@ -29,7 +29,7 @@
 		<p>
 		</div>
 		<div id = 'editor'>
-		<form  action='process' method='post' >
+		<form  action='process' method='post' enctype="multipart/form-data" >
 			<c:if test="${param.processId==''}">
 				<c:set var="processId" scope="session" value="0"/>
 			</c:if>
@@ -47,10 +47,11 @@
 			上傳:<input type='file' id='upload' name='upload' value="${param.upload}" readonly/><p>
 			本次會議裁示:
 			<select id ='presestation' name ='presestation' >
-				<option>轉為A級</option>
-				<option>轉為B級</option>
-				<option>轉為C級</option>
-				<option>持續列管</option>
+				<option  >轉為A級</option>
+				<option  >轉為B級</option>
+				<option >轉為C級</option>
+				<option  >持續列管</option>
+				<option  >解除列管</option>
 				 
 			</select> 
 			

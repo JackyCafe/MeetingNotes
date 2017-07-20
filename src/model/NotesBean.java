@@ -33,12 +33,13 @@ public class NotesBean implements java.io.Serializable {
 	private String presentation;
 	private String reference;
 	private String upload;
- 
+	private Boolean control;
+    private Integer controlStatus;
 	public NotesBean() {
 	}
 
 	public NotesBean(Date recordDate, String sponsor, String source, String grade, String discussMatter,
-			String presentation, String reference, String upload) {
+			String presentation, String reference, String upload , Boolean control,Integer controlStatus) {
 		this.recordDate = recordDate;
 		this.sponsor = sponsor;
 		this.source = source;
@@ -47,6 +48,8 @@ public class NotesBean implements java.io.Serializable {
 		this.presentation = presentation;
 		this.reference = reference;
 		this.upload = upload;
+		this.control = control;
+		this.controlStatus = controlStatus;
 	}
 
 	 
@@ -136,12 +139,33 @@ public class NotesBean implements java.io.Serializable {
 		this.upload = upload;
 	}
 
-	 
+	@Column(name = "control")
+	public Boolean getControl() {
+		return control;
+	}
+
+	@Column(name = "controlStatus")
+	public void setControl(Boolean control) {
+		this.control = control;
+	}
+
+	
+	
+	
+	public Integer getControlStatus() {
+		return controlStatus;
+	}
+
+	public void setControlStatus(Integer controlStatus) {
+		this.controlStatus = controlStatus;
+	}
+
 	@Override
 	public String toString() {
 		return "NotesBean [processId=" + processId + ", recordDate=" + recordDate + ", sponsor=" + sponsor + ", source="
 				+ source + ", grade=" + grade + ", discussMatter=" + discussMatter + ", presentation=" + presentation
-				+ ", reference=" + reference + ", upload=" + upload  + "]";
+				+ ", reference=" + reference + ", upload=" + upload  +", control=" + control  +
+				", controlStatus=" + controlStatus  +"]";
 	}
 
 }
