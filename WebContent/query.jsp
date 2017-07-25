@@ -1,7 +1,13 @@
 <%@page import="model.misc.HibernateUtil"%>
 <%@page import="model.dao.NotesBeanHibernateDAO"%>
+<%@page import="model.dao.ProcessBeanHibernateDAO"%>
+
 <%@page import="model.NotesBean"%>
+<%@page import="model.ProcessBean"%>
+
 <%@page import="service.NotesService"%>
+<%@page import="service.ProcessService"%>
+
 <%@page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
@@ -19,17 +25,22 @@
 	<%
 		String name = request.getParameter("name");
 		String value = request.getParameter("value");
+		
 		NotesService ns = new NotesService(new NotesBeanHibernateDAO(HibernateUtil.getSessionFactory()));
+		
 		List<NotesBean> select = null;
-		if (name != "") {
+		if (name !=null&&value!=null) {
 		 	  select = ns.selectByParam(name,value);
 		}else{
 			 select = ns.select();
 
 		}
 		request.setAttribute("select", select);
-		//System.out.print(select);
-	%>
+		ProcessService processService = new ProcessService(
+				new ProcessBeanHibernateDAO(HibernateUtil.getSessionFactory()));
+		List<ProcessBean> process = processService.select();
+		request.setAttribute("process", process);
+ 	%>
 
 	明細
 	<table>
@@ -69,7 +80,10 @@
 					<tr>
 						<td>${row.source}</td>
 						<td>${row.grade}</td>
-						<td>${row.discussMatter}</td>
+						<td>
+						${row.discussMatter}
+						(${row.sponsor},${row.recordDate})
+						</td>
 						<td>${row.presentation}</td>
 
 						<!-- 辦理情形 -->

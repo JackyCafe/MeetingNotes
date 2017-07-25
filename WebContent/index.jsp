@@ -45,56 +45,69 @@
 }
 </style>
 <script>
-	 function resolution() {
-			$('#resolutionBtn').click(
-				function() {
-					var value = document.getElementById('search').value;
-					alert('query.jsp?name= discuss_matter&'
-							+ 'value ='+value);
-					$.ajax({
-								url : 'query.jsp?name= discuss_matter'
-										+ 'value ='+value ,
-								type : 'get',
-								success : doSuccess,
-								error : doError
-							});
-				});
-		
-		function doSuccess(json) {
- 			$('#summary-table').html(json);
-		}
-		function doError(json) {
- 
-			$('#summary-table').html(json);
-		}
-	 }
-	
-	 function query() {
-			$('#queryBtn').click(
-				function() {
-					var value = document.getElementById('search').value;
- 					$.ajax({
-								url : 'query.jsp?name=discuss_matter&value='+value ,
-								type : 'get',
-								success : doSuccess,
-								error : doError
-							});
-				});
-		
-		function doSuccess(json) {
-			$('#summary-table').html(json);
-		}
-		function doError(json) {
+	function query(s) {
+		var value = document.getElementById('search').value;
+		if (s == 0) {
+			$.ajax({
+				url : 'query.jsp',
+				type : 'post',
+				success : doSuccess,
+				error : doError
+			});
+		} else if (s == 1) {
+			$.ajax({
+				url : 'query.jsp?name=discuss_matter&value=' + value,
+				type : 'post',
+				success : doSuccess,
+				error : doError
+			});
+		} else if (s == 2) {
+			$.ajax({
+				url : 'query.jsp?name=presentation&value=' + value,
+				type : 'post',
+				success : doSuccess,
+				error : doError
+			});
+		} else if (s == 3) {
+			$.ajax({
+				url : 'query.jsp?name=grade&value=' + value,
+				type : 'post',
+				success : doSuccess,
+				error : doError
+			});
 
+		}else if (s == 4) {
+			$.ajax({
+				url : 'query.jsp?name=record_date&value=' + value,
+				type : 'post',
+				success : doSuccess,
+				error : doError
+			});
+
+		}else if (s == 5) {
+			$.ajax({
+				url : 'query.jsp?name=sponsor&value=' + value,
+				type : 'post',
+				success : doSuccess,
+				error : doError
+			});
+
+		}
+
+		function doSuccess(json) {
 			$('#summary-table').html(json);
 		}
-	 }
-	 
-	 
+		function doError(json) {
+			$('#summary-table').html(json);
+		}
+	}
+	function query_select(s) {
+		query(s);
+	}
 	$(document).ready(function() {
 		query();
-		resolution();
- 	})
+		query_select(0);
+	})
 </script>
 <head>
 
@@ -123,12 +136,22 @@
 		group By ControlStatus
     </sql:query>
 
-	
+
 	<input type='text' name='search' id='search'>
-	<input type='button' name='queryBtn' id='queryBtn' onClick='query' value='討論事項' /> 
-	<input type='button' name='resolutionBtn' id='resolutionBtn' onClick='resolution' value='決議' /> 
-	
- 	<div id='login'>
+	<select id='choice' name='choice'
+		onchange='query_select(this.options[this.options.selectedIndex].value)'>
+		<option value="0">重設</option>
+		<option value="1">討論事項 </option>
+		<option value="2">決議</option>
+		<option value="3">分級列管</option>
+		<option value="4">發文日期</option>
+		<option value="5">發文者</option>
+
+
+	</select>
+
+
+	<div id='login'>
 		<c:choose>
 			<c:when test="${user.chineseName!=null}">
 				<a href='logout.jsp'>登出</a>
@@ -175,7 +198,7 @@
 					</c:forEach></td>
 				<td>
 					<!-- 維持 --> <c:forEach var="row" items="${summary2.rows}">
-						<c:if test='${row.ControlStatus=="1"||row.ControlStatus=="999"}'>
+						<c:if test='${row.ControlStatus=="999"}'>
 					 ${row.val}
 					</c:if>
 					</c:forEach>
@@ -240,101 +263,7 @@
 			</tr>
 		</table>
 	</div>
-	<div id='summary-table' class='summary-table'>
-		明細
-	<table>
-		<tr>
-			<th style="width: 8%; border: 1px solid black;">列管事項來源</th>
-			<th style="width: 7%; border: 1px solid black;">分級列管(註1)</th>
-			<th style="width: 30%; border: 1px solid black;">討論事項</th>
-			<th style="width: 30%; border: 1px solid black;">決議/裁示事項</th>
-			<th style="width: 15%; border: 1px solid black;">辦理情形</th>
-			<th style="width: 5%; border: 1px solid black;">本次會議裁示</th>
-			<th style="width: 5%; border: 1px solid black;">功能</th>
-		</tr>
-		<c:if test="${not empty select}">
-			<c:forEach var="row" items="${select}">
-				<c:if test="${row.control == false}">
-					<c:url value="/add_reply.jsp" var="replypath">
-						<c:param name="processId" value="${row.processId}" />
-						<c:param name="source" value="${row.source}" />
-						<c:param name="grade" value="${row.grade}" />
-						<c:param name="discuss_matter" value="${row.discussMatter}" />
-						<c:param name="presentation" value="${row.presentation}" />
-						<c:param name="reference" value="${row.reference}" />
-						<c:param name="upload" value="${row.upload}" />
-
-						<c:param name="add_action" value="add" />
-
-					</c:url>
-					<c:url value="/add_event.jsp" var="editpath">
-						<c:param name="processId" value="${row.processId}" />
-						<c:param name="source" value="${row.source}" />
-						<c:param name="grade" value="${row.grade}" />
-						<c:param name="discuss_matter" value="${row.discussMatter}" />
-						<c:param name="presentation" value="${row.presentation}" />
-
-						<c:param name="edit_action" value="edit" />
-					</c:url>
-					<tr>
-						<td>${row.source}</td>
-						<td>${row.grade}</td>
-						<td>${row.discussMatter}</td>
-						<td>${row.presentation}</td>
-
-						<!-- 辦理情形 -->
-						<td>
-							<table style="border: 0px">
-								<c:forEach var="data" items="${process}" varStatus="status">
-									<tr style="border: 0px">
-										<td style="border: 0px"><c:if
-												test="${row.processId==data.process_id}">
-												<c:out value="${status.count}" />
-												<p>
-													<c:out value="${data.status}" escapeXml="false" />
-												<p>(${data.sponsor},${data.replyDate})
-											</c:if></td>
-									</tr>
-								</c:forEach>
-							</table>
-						</td>
-
-
-						<!-- 本次會議裁示 -->
-						<td>
-							<table style="border: 0px">
-
-								<c:forEach var="data" items="${process}">
-									<tr style="border: 0px">
-										<td style="border: 0px"><c:if
-												test="${row.processId==data.process_id}">
-												<c:out value="${data.id}" escapeXml="true" />
-
-												<c:out value="${data.presestation}" escapeXml="true" />
-											</c:if>
-								</c:forEach>
-								</td>
-								</tr>
-							</table>
-						</td>
-						<!-- 功能 -->
-						<td><c:if test="${ not empty row.upload}">
-								<a href='upload/<c:out value="${row.upload}"/>'
-									download="${row.upload}" class='button' target='_blank'>下載</a>
-								<p>
-							</c:if> <c:if test="${user.chineseName !=null }">
-								<a href="${replypath}" class='button'>回覆</a>
-								<p>
-							</c:if> <c:if test="${row.sponsor == user.chineseName }">
-								<a href="${editpath}" class='button'>編輯</a>
-
-							</c:if></td>
-					</tr>
-				</c:if>
-			</c:forEach>
-		</c:if>
-	</table>
-	</div>
+	<div id='summary-table' class='summary-table'></div>
 
 
 

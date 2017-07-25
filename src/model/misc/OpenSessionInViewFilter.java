@@ -29,9 +29,9 @@ public class OpenSessionInViewFilter implements Filter {
 		HttpServletResponse response = (HttpServletResponse) resp;
 		
 		try {
-			//if (HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().isActive())
-		//		HibernateUtil.getSessionFactory().getCurrentSession().close();
-			//else
+			if (HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().isActive())
+				HibernateUtil.getSessionFactory().getCurrentSession().close();
+			else
 			HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
 			chain.doFilter(request, response);
 			HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().commit();
