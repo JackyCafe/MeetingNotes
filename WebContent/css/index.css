@@ -32,7 +32,7 @@ table, th, td {
 	width: 95%;
 }
 
-#summary-table {
+.summary-table {
 	padding-left: 10px;
 	padding-Top: 30px;
 	border: 0;

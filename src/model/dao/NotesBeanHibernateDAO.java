@@ -8,6 +8,7 @@ import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.query.Query;
 import org.hibernate.sql.ordering.antlr.Factory;
 
 import model.misc.HibernateUtil;
@@ -49,6 +50,20 @@ public class NotesBeanHibernateDAO implements IDAO<NotesBean> {
 		return this.getSession().createQuery("from NotesBean", NotesBean.class).getResultList();
 	}
 
+	
+	public List<NotesBean> selectByParam(String name,String value) {
+   	return this.getSession()
+		.createQuery("from NotesBean where "+name+" like :sf", NotesBean.class)
+		.setParameter("sf", "%"+value+"%")
+ 		.getResultList();
+		
+		
+		
+		 
+	}
+	
+	
+	
 	@Override
 	public NotesBean insert(NotesBean bean) {
 		NotesBean tmp = select(bean);

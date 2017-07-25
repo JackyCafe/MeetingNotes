@@ -1,13 +1,42 @@
 package service;
 
+import java.util.Date;
 import java.util.List;
+
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+
 import model.NotesBean;
+import model.ProcessBean;
 import model.Interface.IService;
 import model.dao.NotesBeanHibernateDAO;
+import model.dao.ProcessBeanHibernateDAO;
+import model.misc.HibernateUtil;
  
 public class NotesService implements IService<NotesBean> {
 	public static NotesBeanHibernateDAO dao;
 	 
+	public static void main(String[] args) {
+		Session session = HibernateUtil.createSessionFactoty().getCurrentSession();
+		dao = new NotesBeanHibernateDAO(HibernateUtil.createSessionFactoty());
+		NotesService service = new NotesService(dao);
+		Transaction trx = null;
+ 
+ 		try {
+			// insert
+			 
+	 
+		} catch (Exception e) {
+			for (StackTraceElement s: e.getStackTrace())
+			{
+				System.out.println(s.toString());
+			}
+			System.out.println(e.toString());
+
+			trx.rollback();
+		}
+
+	}
 	 
 	public NotesService(NotesBeanHibernateDAO dao) {
 		this.dao = dao;
@@ -28,6 +57,11 @@ public class NotesService implements IService<NotesBean> {
 		return dao.select();
 	}
 
+	public List<NotesBean> selectByParam(String name,String value)
+	{
+		return dao.selectByParam(name,value);
+	}	
+	
 	@Override
 	public Boolean delete(int id) {
 		return dao.delete(id);
@@ -43,4 +77,7 @@ public class NotesService implements IService<NotesBean> {
 		return dao.update(id,control,controlStatus);
 	}
 
+	
+	
+	
 }
